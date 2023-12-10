@@ -1,13 +1,76 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import java.io.IOException;
 import Algoritimos.Backtracking;
 import Algoritimos.GeradorDeProblemas;
+import java.util.Scanner;
+
 
 public class App {
+    static Scanner teclado = new Scanner(System.in);
 
     public static void main(String[] args) {
+        int opcao;
+      
+        do {
+            opcao = menu();
+            limparTela();
+            switch (opcao) {
+                case 1:
+                    //rodarBacktracking();
+                    System.out.println("BT ");
+                    break;
+                case 2:
+                    //rodarDivisaoConquista();
+                    System.out.println("DC ");
+                    break;
+                case 3:
+                    //rodarProgramacaoDinamica();
+                    System.out.println("PD ");
+                    break;
+                default:
+                    break;
+            }
+            pausa();
+        } while (opcao != 0);
+        System.out.println("Obrigado por utilizar nosso sistema! Ate breve :)");
+    }
+
+    public static int menu() {
+        limparTela();
+        int opcao=-1;
+        do{
+            System.out.println("Menu ");
+            System.out.println("=================================================");
+            System.out.println("1 - Rodar Backtracking");
+            System.out.println("2 - Rodar Divisao e Conquista");
+            System.out.println("3 - Rodar Programacao Dinamica");
+            System.out.println("0 - Sair");
+            System.out.println("=================================================");
+            System.out.print("\nDigite sua opção: ");
+            try {
+                opcao = Integer.parseInt(teclado.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Opcao invalida.");
+                continue;
+            }
+        }while(!(opcao>=0  && opcao <=3));
+        return opcao;
+    }
+
+    public static void limparTela() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+
+    static void pausa() {
+        System.out.println("Enter para continuar.");
+        teclado.nextLine();
+    }
+
+    private static void rodarBacktracking() {
+
         Backtracking backtracking = new Backtracking();
         int numCaminhoes = 3;
         double numConjuntos = 10;
@@ -18,8 +81,6 @@ public class App {
         double tempoTotal = 0;
         double tempoMedioExecucao = 0;
         int tempoMaxExecucao = 30000; // 30 segundos
-
-        
 
         for (int k = 6; k < numConjuntos; qtdRotas++) {
             List<int[]> conjuntosDeRotas = GeradorDeProblemas.geracaoDeRotas(qtdRotas, tamConjunto, dispersao);
