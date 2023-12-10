@@ -17,7 +17,7 @@ public class App {
         int tamConjunto=10;
         double tempoTotal = 0;
         double tempoMedioExecucao = 0;
-        int tempoMaxExecucao = 2000; // 30 segundos
+        int tempoMaxExecucao = 30000; // 30 segundos
 
         
 
