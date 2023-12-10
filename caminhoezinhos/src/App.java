@@ -1,14 +1,16 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.io.IOException;
 import Algoritimos.Backtracking;
+import Algoritimos.DivisaoConquista;
 import Algoritimos.GeradorDeProblemas;
 import java.util.Scanner;
 
 
 public class App {
     static Scanner teclado = new Scanner(System.in);
+    private static List<int[]> conjuntosDeRotasParaTestes = new ArrayList<>();
+    private static List<int[]> conjuntosDeRotasComMaiorTamanho = new ArrayList<>();
 
     public static void main(String[] args) {
         int opcao;
@@ -18,14 +20,21 @@ public class App {
             limparTela();
             switch (opcao) {
                 case 1:
-                    //rodarBacktracking();
-                    System.out.println("BT ");
+                    rodarBacktracking();
+                    System.out.println("Rodar Backtracking até atingir limite de 30 segundos iniciando com 6 rotas ");
                     break;
                 case 2:
-                    //rodarDivisaoConquista();
-                    System.out.println("DC ");
+                    System.out.println("Rodar Backtracking com número de elementos a escolha ");
                     break;
                 case 3:
+                    //rodarProgramacaoDinamica();
+                    System.out.println("Rodar Divisao e Conquista com os mesmos conjuntos de tamanho T do backtracking ");
+                    break;
+                case 4:
+                    rodarDivisaoConquistaElementosLivres();
+                    System.out.println("Rodar Divisao e Conquista com número de elementos a escolha ");
+                    break;
+                case 5:
                     //rodarProgramacaoDinamica();
                     System.out.println("PD ");
                     break;
@@ -37,15 +46,17 @@ public class App {
         System.out.println("Obrigado por utilizar nosso sistema! Ate breve :)");
     }
 
-    public static int menu() {
+    private static int menu() {
         limparTela();
         int opcao=-1;
         do{
             System.out.println("Menu ");
-            System.out.println("=================================================");
-            System.out.println("1 - Rodar Backtracking");
-            System.out.println("2 - Rodar Divisao e Conquista");
-            System.out.println("3 - Rodar Programacao Dinamica");
+            System.out.println("==================================================================================");
+            System.out.println("1 - Rodar Backtracking até atingir limite de 30 segundos iniciando com 6 rotas");
+            System.out.println("2 - Rodar Backtracking com número de elementos a escolha");
+            System.out.println("3 - Rodar Divisao e Conquista com os mesmos conjuntos de tamanho T do backtracking");
+            System.out.println("4 - Rodar Divisao e Conquista com número de elementos a escolha");
+            System.out.println("5 - Rodar Programacao Dinamica");
             System.out.println("0 - Sair");
             System.out.println("=================================================");
             System.out.print("\nDigite sua opção: ");
@@ -55,16 +66,16 @@ public class App {
                 System.out.println("Opcao invalida.");
                 continue;
             }
-        }while(!(opcao>=0  && opcao <=3));
+        }while(!(opcao>=0  && opcao <=5));
         return opcao;
     }
 
-    public static void limparTela() {
+    private static void limparTela() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
 
-    static void pausa() {
+    private static void pausa() {
         System.out.println("Enter para continuar.");
         teclado.nextLine();
     }
@@ -88,6 +99,9 @@ public class App {
             for (int i = 0; i < numConjuntos; i++) {
                 long startTime = System.currentTimeMillis();
                 int[] rotaAtual = conjuntosDeRotas.get(i);
+                
+                conjuntosDeRotasParaTestes.add(rotaAtual);
+
                 int[] resultado = backtracking.distribuirRotas(rotaAtual, numCaminhoes);
                 long endTime = System.currentTimeMillis();
 
@@ -122,10 +136,11 @@ public class App {
                 System.out.println("Tamanho máximo obtido: " + qtdRotas + " rotas");
                 System.out.println("------------------------------------------");
                 break;
-              
-
             }
         }
+
+        obterElementosDeMaiorValorLista();
+        var x = 1;
     }
 
     private static String obterRotasPorCaminhao(int[] distribuicao, int caminhao, int[] rotas) {
@@ -148,5 +163,89 @@ public class App {
         rotasCaminhao.append(" - total ").append(totalKm).append("km");
 
         return rotasCaminhao.toString();
+    }
+
+    private static void rodarDivisaoConquistaElementosLivres(){
+        int numeroCaminhoes = 3;
+        int tamanhoConjunto = 2;
+
+        List<Double> temposExecucao = new ArrayList<>();
+
+        List<int[]> rotasAleatorias = GeradorDeProblemas.geracaoDeRotas(18, tamanhoConjunto, 1.0);
+
+        System.out.println("Conjunto de rotas: ");
+
+        for(int[] rota : rotasAleatorias) {
+            long inicioExecucao = System.nanoTime();
+
+            List<List<Integer>> rotasCaminhoes = new ArrayList<>();
+
+            for (int i = 0; i < numeroCaminhoes; i++) {
+                rotasCaminhoes.add(new ArrayList<>());
+            }
+
+            System.out.println("Rota Aleatória: " + Arrays.toString(rota));
+
+            Arrays.sort(rota);
+
+            for(int i = 0; i < rota.length / 2; i++)
+            {
+                int elementoAtual = rota[i];
+                rota[i] = rota[rota.length - i - 1];
+                rota[rota.length - i - 1] = elementoAtual;
+            }
+
+            DivisaoConquista.encontrarMelhorRotaParaCadaCaminhao(rota, 0, rota.length - 1, rotasCaminhoes);
+
+            long finalExecucao = System.nanoTime();
+
+            for (int i = 0; i < rotasCaminhoes.size(); i++) {
+                System.out.println("Caminhão " + (i + 1) + ": " + rotasCaminhoes.get(i) +
+                    ", Total Distância: " + DivisaoConquista.calcularSomatorioDeQuilometragensPorRota(rotasCaminhoes.get(i)));
+            }
+
+            long tempoExecucaoEmNanoSegundos = (finalExecucao - inicioExecucao);
+            double tempoExecucaoEmMilissegundos = tempoExecucaoEmNanoSegundos/1000000.0;
+
+            temposExecucao.add(tempoExecucaoEmMilissegundos);
+
+            System.out.println("Tempo de execução: " + tempoExecucaoEmMilissegundos + " milissegundos");
+
+            
+            System.out.println("=======================================");            
+        }
+
+        double somaTempos = 0.0;
+
+        for (double tempo : temposExecucao) {
+            somaTempos += tempo;
+        }
+
+        double tempoMedioExecucaoEmMili = somaTempos/tamanhoConjunto;
+
+        System.out.println("Tempo médio de execução do algoritmo: " + tempoMedioExecucaoEmMili + " milissegundos");
+    }
+
+    private static List<int[]> obterElementosDeMaiorValorLista(){
+        if(conjuntosDeRotasParaTestes.isEmpty()){
+            return null;
+        }
+
+        int[] maiorConjunto = conjuntosDeRotasParaTestes.get(0);
+
+        for (int[] conjuntoAtual : conjuntosDeRotasParaTestes) {
+            if (conjuntoAtual.length > maiorConjunto.length) {
+                maiorConjunto = conjuntoAtual;
+            }
+        }
+
+        conjuntosDeRotasComMaiorTamanho.add(maiorConjunto);
+
+        for (int[] conjuntoAtual : conjuntosDeRotasParaTestes) {
+            if (conjuntoAtual.length == maiorConjunto.length) {
+                conjuntosDeRotasComMaiorTamanho.add(conjuntoAtual);
+            }
+        }
+        return conjuntosDeRotasComMaiorTamanho;
     }
 }
