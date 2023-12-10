@@ -24,16 +24,21 @@ public class App {
         for (int i = 0; i < numConjuntos; i++) {
             long startTime = System.currentTimeMillis();
             long endTime = System.currentTimeMillis();
-            int[] resultado = backtracking.distribuirRotas(conjuntosDeRotas.get(i), numCaminhoes);
+
+            int[] rotaAtual = conjuntosDeRotas.get(i);
+
+            int[] resultado = backtracking.distribuirRotas(rotaAtual, numCaminhoes);
            
 
             System.out.println("--------------------------------------------");
-            System.out.println("Conjunto " + (i + 1) + ":");
+            System.out.print("Conjunto " + (i + 1) + ":");
+            System.out.println(" " + Arrays.toString(rotaAtual));
+
             for (int j = 0; j < numCaminhoes; j++) {
-                System.out.println("Caminhão " + (j + 1) + ": rotas" + obterRotasPorCaminhao(resultado, j, conjuntosDeRotas.get(i)));
+                System.out.println("Caminhão " + (j + 1) + ": rotas" + obterRotasPorCaminhao(resultado, j, rotaAtual));
             }
 
-            int diferenca = calcularDiferenca(resultado, conjuntosDeRotas.get(i), numCaminhoes);
+            /*int diferenca = calcularDiferenca(resultado, conjuntosDeRotas.get(i), numCaminhoes);
             System.out.println("Diferença total: " + diferenca + " km");
             System.out.println("Tempo de execução: " + (endTime - startTime) + " ms");
             totalExecucoes += (endTime - startTime);
@@ -49,7 +54,7 @@ public class App {
 
             for (int k = 0; k < numCaminhoes; k++) {
                 System.out.println("Caminhão " + (k + 1) + ": rotas" + obterRotasPorCaminhao(melhorResultado, k, conjuntosDeRotas.get(melhorDiferenca)));
-            }
+            }*/
         }
 
         
