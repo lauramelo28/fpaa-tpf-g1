@@ -355,7 +355,7 @@ public class App {
             for(int caminhao=numeroCaminhoes; caminhao != 0; caminhao--){
                 
                 // convertendo de list para array
-                List<Integer> listRotas = programacaoDinamica.tabelaDinamica(rotasGerada, limites);
+                List<Integer> listRotas = ProgramacaoDinamica.tabelaDinamica(rotasGerada, limites);
                 int[] rotas = new int[listRotas.size()];
                 for (int i = 0; i < listRotas.size(); i++) {
                     rotas[i] = listRotas.get(i);

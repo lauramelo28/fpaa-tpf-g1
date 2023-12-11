@@ -18,9 +18,16 @@ public class Backtracking {
     private void distribuirRotasUtil(int[] rotas, int numCaminhoes, int indiceAtual, int[] distribuicaoAtual) {
         if (indiceAtual == rotas.length) {
             // Chegou ao final, verifica a diferença de quilometragem
+
+            int mediaTotalDeQuilometragensPorCaminhao = (int) ((Arrays.stream(rotas).sum() / numCaminhoes) * 1.1);
+
             int[] somaPorCaminhao = new int[numCaminhoes];
             for (int i = 0; i < rotas.length; i++) {
                 somaPorCaminhao[distribuicaoAtual[i]] += rotas[i];
+                if(somaPorCaminhao[distribuicaoAtual[i]] > mediaTotalDeQuilometragensPorCaminhao){
+                    //Acontece a poda caso o somatório das km após adição desse elemento exceder a média da km de caminhões
+                    return;
+                }
             }
 
             // Encontrar a diferença entre a maior e a menor soma por caminhão
@@ -37,7 +44,7 @@ public class Backtracking {
         }
 
         // Tenta atribuir a rota atual a cada caminhão
-        for (int i = 0; i < numCaminhoes; i++) {
+        for (int i = 0; i < numCaminhoes; i++) {                      
             distribuicaoAtual[indiceAtual] = i;
             distribuirRotasUtil(rotas, numCaminhoes, indiceAtual + 1, distribuicaoAtual);
         }
