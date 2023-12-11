@@ -8,12 +8,6 @@ import Algoritimos.ProgramacaoDinamica;
 
 import java.util.Scanner;
 
-
-import java.util.ArrayList;
-import java.util.List;
-
-import Algoritimos.GeradorDeProblemas;
-
 public class App {
 
     static Scanner teclado = new Scanner(System.in);
@@ -341,7 +335,7 @@ public class App {
     }
 
     private static void rodarProgramacaoDinamica(List<int[]> rotasAleatorias, int numeroCaminhoes) {
-        //List<int[]> retorno = geradorDeProblemas.geracaoDeRotas(10, 1, 5);
+        //List<int[]> retorno = GeradorDeProblemas.geracaoDeRotas(10, 1, 5);
         //int[] valor = retorno.get(0);
         //List<int[]> listaFinal = new ArrayList<>();
         double tempoTotal = 0;
