@@ -22,13 +22,12 @@ public class GeradorDeProblemas {
      * @param quantRotas  A quantidade de rotas que será utilizada em um teste. Deve
      *                    ser um número inteiro positivo preferencialmente maior que
      *                    5.
-     * @param tamConjunto O tamanho do conjunto de testes, isto é, quantos
-     *                    conjuntos de rotas do tamanho acima serão gerados.
+     * @param tamConjunto O tamanho do conjunto de testes, isto é, quantos conjuntos
+     *                    de rotas do tamanho acima serão gerados.
      * @param dispersao   A dispersão do tamanho das rotas em %. Por exemplo, se a
      *                    dipersão for 0.50 (50%), as rotas geradas estarão
      *                    entre 13 e 20. Uma dispersão de 1.0 (100%) gera conjuntos
-     *                    de rotas entre 13
-     *                    e 26.
+     *                    de rotas entre 13 e 26.
      * @return Retorna uma lista de conjuntos de rotas. Cada conjunto de rotas é um
      *         vetor de números inteiros.
      */
@@ -38,9 +37,7 @@ public class GeradorDeProblemas {
         for (int i = 0; i < tamConjunto; i++) {
             int[] rotas = new int[quantRotas];
             for (int j = 0; j < quantRotas; j++) {
-                //rotas[j] = aleatorio.nextInt(TAM_BASE, tam_max);
-                rotas[j] = aleatorio.nextInt(tam_max);
-
+                rotas[j] = aleatorio.nextInt(TAM_BASE, tam_max);
             }
             conjuntoDeTeste.add(rotas);
         }
