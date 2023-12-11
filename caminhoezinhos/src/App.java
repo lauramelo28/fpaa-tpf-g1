@@ -343,7 +343,8 @@ public class App {
 
         int numeroRota = 1;
         for (int[] rotasGerada : rotasAleatorias) {
-            // int[] rotasGerada2 = {35, 34, 33, 23, 21, 32, 35, 19, 26, 42};
+             //int[] rotasGerada = {28, 28, 29, 29, 29, 29, 30, 30, 31, 31, 32, 32, 32, 32, 33, 33, 35, 35, 35, 36, 38, 38, 38, 39, 39, 39, 40};
+             //int[] rotasGerada = {24, 25, 27, 27, 29, 29, 29, 29, 30, 30, 32, 32, 32, 32, 42, 42, 43, 43, 43, 44, 51, 51, 51, 53, 55, 55};
             Arrays.sort(rotasGerada);
             System.out.println("======================= Rotas do conjunto "+ (numeroRota) +" ===============================");
             System.out.println("Rotas aleatoria gerada: "+Arrays.toString(rotasGerada));
@@ -363,6 +364,19 @@ public class App {
                 
                 rotasGerada = programacaoDinamica.removerRotas(rotasGerada, rotas);
             }
+            if(rotasGerada.length > 0){
+                listaFinal.sort((r1, r2) -> programacaoDinamica.comparadorRotas(r1,r2));
+            }
+
+            listaFinal.size();
+            for (int i = 0; i<rotasGerada.length; i++) {
+                listaFinal.remove(i);
+                int[] novoVetor = adicionaItemVetor(listaFinal.get(i), rotasGerada[i]);
+                listaFinal.add(i, novoVetor);
+            }
+
+            listaFinal.size();
+
 
             listaFinal.stream().forEach(v ->  System.out.println("Rota: " + Arrays.toString(v)));  
             numeroRota++; 
@@ -381,5 +395,20 @@ public class App {
 
     private static void rodarProgramacaoDinamicaConjuntoElementosPreDefinidos() {
         rodarProgramacaoDinamica(conjuntosDeRotasComMaiorTamanho, 3);
+    }
+
+    public static int[] adicionaItemVetor(int[] vetorExistente, int novoElemento){
+        // Criando um novo vetor com tamanho aumentado para adicionar o novo elemento
+        int novoTamanho = vetorExistente.length + 1;
+        int[] novoVetor = new int[novoTamanho];
+
+        // Copiando os elementos do vetor existente para o novo vetor
+        System.arraycopy(vetorExistente, 0, novoVetor, 0, vetorExistente.length);
+
+        // Adicionando o novo elemento ao final do novo vetor
+        novoVetor[novoTamanho - 1] = novoElemento;
+        
+        Arrays.sort(novoVetor);
+        return novoVetor;
     }
 }

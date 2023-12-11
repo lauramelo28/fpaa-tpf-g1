@@ -95,32 +95,46 @@ public class ProgramacaoDinamica {
     }
 
     public int[] removerRotas(int[] rotas, int[] rotasUsadas) {
-        int[] rotasFinal = new int[rotas.length]; // O tamanho máximo possível é o mesmo que rotas
+        List<Integer> rotasList = new ArrayList<>();
+        for (int rota : rotas) {
+            rotasList.add(rota);
+        }
     
-        int index = 0; // Índice para controlar onde adicionar elementos em rotasFinal
-    
-        // Lógica para remover rotas usadas
-        for (int i = 0; i < rotas.length; i++) {
-            boolean notValid = false;
-    
-            for (int rotaUsada : rotasUsadas) {
-                if (rotas[i] == rotaUsada) {
-                    notValid = true;
-                    break; // Sai do loop interno quando uma correspondência é encontrada
-                }
-            }
-    
-            if (!notValid) {
-                rotasFinal[index] = rotas[i];
-                index++; // Incrementa o índice apenas quando uma rota válida é adicionada
+        // Remover todas as ocorrências dos elementos de rotasUsadas
+        for (int rotaUsada : rotasUsadas) {
+            int index = rotasList.indexOf(rotaUsada);
+            if(index != -1){
+                rotasList.remove(index);
             }
         }
     
-        // Cria um novo array com o tamanho exato que contém apenas as rotas válidas
-        int[] rotasFinaisValidas = new int[index];
-        System.arraycopy(rotasFinal, 0, rotasFinaisValidas, 0, index);
+        // Convertendo de volta para um array de int
+        int[] rotasFinais = new int[rotasList.size()];
+        for (int i = 0; i < rotasList.size(); i++) {
+            rotasFinais[i] = rotasList.get(i);
+        }
     
-        return rotasFinaisValidas;
+        return rotasFinais;
+    }
+
+    public int comparadorRotas(int[] r1, int[] r2){
+        if(somaRotas(r1) < somaRotas(r2)){
+            return -1;
+        }else if(somaRotas(r1) > somaRotas(r2)){
+            return 1;
+        }
+        return 0;
+    }
+
+    public int somaRotas(int[] rota){
+        int quilometragemTotal = 0;
+
+        for (int i = 0; i < rota.length; i++) {
+            int quilometragem = rota[i];
+            quilometragemTotal += quilometragem;
+        }
+
+        return quilometragemTotal;   
     }
 
 }
