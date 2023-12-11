@@ -29,7 +29,8 @@ public class ProgramacaoDinamica {
             }
         }
 
-        programacaoDinamica.imprimirFunction(tabela, conjuntoDeTeste.length, limites.length);
+        // Exibi tabela formata
+        // programacaoDinamica.imprimirFunction(tabela, conjuntoDeTeste.length, limites.length);
 
         int[] ordemCaminhoes = new int[4];
         ordemCaminhoes = programacaoDinamica.solucaoRotas(tabela, conjuntoDeTeste, (conjuntoDeTeste.length - 1), (limites.length - 1));
