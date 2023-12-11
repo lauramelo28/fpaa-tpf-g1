@@ -21,18 +21,20 @@ public class App {
             switch (opcao) {
                 case 1:
                     rodarBacktracking();
-                    System.out.println("Rodar Backtracking até atingir limite de 30 segundos iniciando com 6 rotas ");
                     break;
                 case 2:
-                    System.out.println("Rodar Backtracking com número de elementos a escolha ");
+                    rodarBacktrackingElementosLivres();
                     break;
                 case 3:
-                    //rodarProgramacaoDinamica();
-                    System.out.println("Rodar Divisao e Conquista com os mesmos conjuntos de tamanho T do backtracking ");
+                    if(conjuntosDeRotasComMaiorTamanho.isEmpty()){
+                        System.out.println("Executar primeiramente o item 1 para obter o conjunto para testes");
+                        break;
+                    }
+
+                    rodarDivisaoConquistaConjuntoElementosPreDefinidos();
                     break;
                 case 4:
                     rodarDivisaoConquistaElementosLivres();
-                    System.out.println("Rodar Divisao e Conquista com número de elementos a escolha ");
                     break;
                 case 5:
                     //rodarProgramacaoDinamica();
@@ -58,7 +60,7 @@ public class App {
             System.out.println("4 - Rodar Divisao e Conquista com número de elementos a escolha");
             System.out.println("5 - Rodar Programacao Dinamica");
             System.out.println("0 - Sair");
-            System.out.println("=================================================");
+            System.out.println("==================================================================================");
             System.out.print("\nDigite sua opção: ");
             try {
                 opcao = Integer.parseInt(teclado.nextLine());
@@ -80,13 +82,50 @@ public class App {
         teclado.nextLine();
     }
 
+    private static void rodarBacktrackingElementosLivres() {
+        System.out.println("Digite o numero de caminhoes: ");
+        int numCaminhoes = Integer.parseInt(teclado.nextLine());
+
+        List<int[]> conjuntosDeRotas = gerarElementosAleatorios();
+
+        Backtracking backtracking = new Backtracking();
+
+        double tempoTotal = 0;
+        double tempoMedioExecucao = 0;
+    
+        for(int[] rota : conjuntosDeRotas) {
+            long startTime = System.nanoTime();
+            
+            int[] resultado = backtracking.distribuirRotas(rota, numCaminhoes);
+            long endTime = System.nanoTime();
+
+            long tempoExecucao = endTime - startTime;
+
+            System.out.println("--------------------------------------------");
+            System.out.print("Conjunto: ");
+            System.out.println(Arrays.toString(rota));
+
+            for (int j = 0; j < numCaminhoes; j++) {
+                System.out.println("-" + obterRotasPorCaminhao(resultado, j, rota));
+            }
+        
+            System.out.println("Tempo de execução: " + tempoExecucao + " ms");
+            tempoTotal += tempoExecucao;
+        }
+
+        tempoMedioExecucao = tempoTotal / conjuntosDeRotas.size();
+        double tempoExecucaoEmMilissegundos = tempoMedioExecucao/1000000.0;
+
+        System.out.println("*********************************************");
+        System.out.println("Tempo médio de execução: " + tempoExecucaoEmMilissegundos + " ms");
+    }    
+    
     private static void rodarBacktracking() {
 
         Backtracking backtracking = new Backtracking();
         int numCaminhoes = 3;
         double numConjuntos = 10;
         double dispersao = 0.5;
-        int totalExecucoes = 0;
         int qtdRotas=6;
         int tamConjunto=10;
         double tempoTotal = 0;
@@ -140,7 +179,20 @@ public class App {
         }
 
         obterElementosDeMaiorValorLista();
-        var x = 1;
+    }
+
+    private static void rodarDivisaoConquistaElementosLivres(){
+        System.out.println("Digite o numero de caminhoes: ");
+        
+        int numeroCaminhoes = Integer.parseInt(teclado.nextLine());
+
+        List<int[]> rotasAleatorias = gerarElementosAleatorios();
+
+        rodarDivisaoConquista(rotasAleatorias, numeroCaminhoes);
+    }
+
+    private static void rodarDivisaoConquistaConjuntoElementosPreDefinidos(){
+        rodarDivisaoConquista(conjuntosDeRotasComMaiorTamanho, 3);
     }
 
     private static String obterRotasPorCaminhao(int[] distribuicao, int caminhao, int[] rotas) {
@@ -165,13 +217,8 @@ public class App {
         return rotasCaminhao.toString();
     }
 
-    private static void rodarDivisaoConquistaElementosLivres(){
-        int numeroCaminhoes = 3;
-        int tamanhoConjunto = 2;
-
+    private static void rodarDivisaoConquista(List<int[]> rotasAleatorias, int numeroCaminhoes){
         List<Double> temposExecucao = new ArrayList<>();
-
-        List<int[]> rotasAleatorias = GeradorDeProblemas.geracaoDeRotas(18, tamanhoConjunto, 1.0);
 
         System.out.println("Conjunto de rotas: ");
 
@@ -220,12 +267,12 @@ public class App {
         for (double tempo : temposExecucao) {
             somaTempos += tempo;
         }
-
-        double tempoMedioExecucaoEmMili = somaTempos/tamanhoConjunto;
+        
+        double tempoMedioExecucaoEmMili = somaTempos/rotasAleatorias.size();
 
         System.out.println("Tempo médio de execução do algoritmo: " + tempoMedioExecucaoEmMili + " milissegundos");
-    }
-
+    }    
+    
     private static List<int[]> obterElementosDeMaiorValorLista(){
         if(conjuntosDeRotasParaTestes.isEmpty()){
             return null;
@@ -247,5 +294,18 @@ public class App {
             }
         }
         return conjuntosDeRotasComMaiorTamanho;
+    }
+
+    private static List<int[]> gerarElementosAleatorios(){
+        System.out.println("Digite a quantidade de rotas: ");
+        int qtdRotas = Integer.parseInt(teclado.nextLine());
+
+        System.out.println("Digite o tamanho do conjunto: ");
+        int tamanhoConjunto = Integer.parseInt(teclado.nextLine());
+
+        System.out.println("Digite a dispersao [Ex: 0.50, 1.0]: ");
+        double dispersao = Double.parseDouble(teclado.nextLine());
+
+        return GeradorDeProblemas.geracaoDeRotas(qtdRotas, tamanhoConjunto, dispersao);
     }
 }
