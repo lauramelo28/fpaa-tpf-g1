@@ -10,7 +10,7 @@ public class ProgramacaoDinamica {
     
     static ProgramacaoDinamica programacaoDinamica = new ProgramacaoDinamica();
 
-    public static int[] tabelaDinamica(int[] conjuntoDeTeste, int[] limites){
+    public static List<Integer> tabelaDinamica(int[] conjuntoDeTeste, int[] limites){
 
         // definindo tamanho do array por tamanho do array de limites
         int[][] tabela = new int[conjuntoDeTeste.length][limites.length];
@@ -32,39 +32,34 @@ public class ProgramacaoDinamica {
         // Exibi tabela formata
         // programacaoDinamica.imprimirFunction(tabela, conjuntoDeTeste.length, limites.length);
 
-        int[] ordemCaminhoes = new int[4];
-        ordemCaminhoes = programacaoDinamica.solucaoRotas(tabela, conjuntoDeTeste, (conjuntoDeTeste.length - 1), (limites.length - 1));
-
+        List<Integer> ordemCaminhoes = programacaoDinamica.solucaoRotas(tabela, conjuntoDeTeste, (conjuntoDeTeste.length - 1), (limites.length - 1));
+        
         return ordemCaminhoes;
 
     }
 
-    public int[] solucaoRotas(int[][] tabela, int[] conjuntoDeTeste, int linha, int coluna){
-        
-        int[] rotasSolucao = new int[4];
-
-        int posicao = 0;
+    public List<Integer> solucaoRotas(int[][] tabela, int[] conjuntoDeTeste, int linha, int coluna) {
+        List<Integer> rotasSolucao = new ArrayList<>();
+    
         while (linha >= 0 && coluna > 0) {
-            if(linha == 0 && conjuntoDeTeste[linha] == tabela[linha][coluna]){
-                rotasSolucao[posicao] = conjuntoDeTeste[linha];
-                posicao++;
+            if (linha == 0 && conjuntoDeTeste[linha] == tabela[linha][coluna]) {
+                rotasSolucao.add(conjuntoDeTeste[linha]);
                 break;
-            } else if(linha == 0){
+            } else if (linha == 0) {
                 break;
-            } else if(tabela[linha][coluna] != tabela[linha - 1][coluna]){
-                rotasSolucao[posicao] = conjuntoDeTeste[linha];
-                posicao++;
+            } else if (tabela[linha][coluna] != tabela[linha - 1][coluna]) {
+                rotasSolucao.add(conjuntoDeTeste[linha]);
                 coluna -= conjuntoDeTeste[linha];
                 linha -= 1;
             } else {
                 linha -= 1;
             }
         }
-
+    
         return rotasSolucao;
     }
 
-    public int[] tabelaLimite(int[] limitesOriginal){
+    public int[] tabelaLimite(int[] limitesOriginal, int qtdCaminhoes){
         int[] limitesFinal;
         int maximo = 0, soma = 0;
         ArrayList<Integer> limiteNovos = new ArrayList<>();
@@ -77,7 +72,7 @@ public class ProgramacaoDinamica {
         soma = limiteNovos.stream().mapToInt(Integer::intValue).sum();
 
         // limite máximo de valor por caminhão, mais 10% para valor máximo
-        maximo = (int) ((soma/3)*1.05);
+        maximo = (int) ((soma/qtdCaminhoes)*1.05);
 
         // criando vetor deacordo com tamanho dos limites
         limitesFinal = new int[maximo];

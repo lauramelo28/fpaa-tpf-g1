@@ -348,22 +348,29 @@ public class App {
         double tempoMedioExecucao = 0;
 
         int numeroRota = 1;
-        for (int[] valor : rotasAleatorias) {
+        for (int[] rotasGerada : rotasAleatorias) {
+            // int[] rotasGerada2 = {35, 34, 33, 23, 21, 32, 35, 19, 26, 42};
+            Arrays.sort(rotasGerada);
+            System.out.println("======================= Rotas do conjunto "+ (numeroRota) +" ===============================");
+            System.out.println("Rotas aleatoria gerada: "+Arrays.toString(rotasGerada));
             List<int[]> listaFinal = new ArrayList<>();
             // pegando limites
-            int[] limites = programacaoDinamica.tabelaLimite(valor);
+            int[] limites = programacaoDinamica.tabelaLimite(rotasGerada, numeroCaminhoes);
             long startTime = System.currentTimeMillis();
             for(int caminhao=numeroCaminhoes; caminhao != 0; caminhao--){
                 
-                int[] rotas = new int[4];
-                rotas = programacaoDinamica.tabelaDinamica(valor, limites);
+                // convertendo de list para array
+                List<Integer> listRotas = programacaoDinamica.tabelaDinamica(rotasGerada, limites);
+                int[] rotas = new int[listRotas.size()];
+                for (int i = 0; i < listRotas.size(); i++) {
+                    rotas[i] = listRotas.get(i);
+                }
                 listaFinal.add(rotas);
                 
-                valor = programacaoDinamica.removerRotas(valor, rotas);
+                rotasGerada = programacaoDinamica.removerRotas(rotasGerada, rotas);
             }
 
-            System.out.println("======================= Rotas do conjunto "+ (numeroRota) +" ===============================");
-            listaFinal.stream().forEach(v ->  System.out.println("Rota Finais: " + Arrays.toString(v)));  
+            listaFinal.stream().forEach(v ->  System.out.println("Rota: " + Arrays.toString(v)));  
             numeroRota++; 
             long endTime = System.currentTimeMillis();   
             long tempoExecucao = endTime - startTime;
