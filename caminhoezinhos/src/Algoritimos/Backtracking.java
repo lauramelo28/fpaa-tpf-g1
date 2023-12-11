@@ -38,6 +38,14 @@ public class Backtracking {
 
         // Tenta atribuir a rota atual a cada caminhão
         for (int i = 0; i < numCaminhoes; i++) {
+            int somaElementosCaminhaoAtualAposAdicao = Arrays.stream(distribuicaoAtual).sum() + rotas[indiceAtual];
+            int mediaTotalDeQuilometragensPorCaminhao = Arrays.stream(rotas).sum() / numCaminhoes;
+            
+            // Poda: se a adição passar da média esperada, não prossegue com essa opção
+            if (somaElementosCaminhaoAtualAposAdicao > mediaTotalDeQuilometragensPorCaminhao){
+                continue;
+            }
+                        
             distribuicaoAtual[indiceAtual] = i;
             distribuirRotasUtil(rotas, numCaminhoes, indiceAtual + 1, distribuicaoAtual);
         }
