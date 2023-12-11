@@ -48,8 +48,16 @@ public class App {
                     rodarDivisaoConquistaElementosLivres();
                     break;
                 case 5:
-                    rodarProgramacaoDinamica();
+                    if(conjuntosDeRotasComMaiorTamanho.isEmpty()){
+                        System.out.println("Executar primeiramente o item 1 para obter o conjunto para testes");
+                        break;
+                    }
+
+                    rodarProgramacaoDinamicaConjuntoElementosPreDefinidos();
                     System.out.println("PD ");
+                    break;
+                case 6:
+                    rodarProgramacaoDinamicaElementosLivres();
                     break;
                 default:
                     break;
@@ -70,7 +78,8 @@ public class App {
             System.out.println("2 - Rodar Backtracking com número de elementos a escolha");
             System.out.println("3 - Rodar Divisao e Conquista com os mesmos conjuntos de tamanho T do backtracking");
             System.out.println("4 - Rodar Divisao e Conquista com número de elementos a escolha");
-            System.out.println("5 - Rodar Programacao Dinamica");
+            System.out.println("5 - Rodar Programacao Dinamica com os mesmos conjuntos de tamanho T do backtracking");
+            System.out.println("6 - Rodar Programacao Dinamica com número de elementos a escolha");
             System.out.println("0 - Sair");
             System.out.println("==================================================================================");
             System.out.print("\nDigite sua opção: ");
@@ -80,7 +89,7 @@ public class App {
                 System.out.println("Opcao invalida.");
                 continue;
             }
-        }while(!(opcao>=0  && opcao <=5));
+        }while(!(opcao>=0  && opcao <=6));
         return opcao;
     }
 
@@ -321,27 +330,55 @@ public class App {
         return GeradorDeProblemas.geracaoDeRotas(qtdRotas, tamanhoConjunto, dispersao);
     }
 
-    private static void rodarProgramacaoDinamica() {
-        List<int[]> retorno = geradorDeProblemas.geracaoDeRotas(10, 1, 5);
-        List<int[]> listaFinal = new ArrayList<>(3);
-        int[] valor = retorno.get(0);
+     private static void rodarProgramacaoDinamicaElementosLivres(){
+        System.out.println("Digite o numero de caminhoes: ");
         
-        // valor teste para verificar retorno
-        //int[] valor = {35, 34, 33, 23, 21, 32, 35, 19, 26, 42};
+        int numeroCaminhoes = Integer.parseInt(teclado.nextLine());
 
-        // pegando limites
-        int[] limites = programacaoDinamica.tabelaLimite(valor);
+        List<int[]> rotasAleatorias = gerarElementosAleatorios();
 
-        for(int caminhao=3; caminhao != 0; caminhao--){
-            
-            int[] rotas = new int[4];
-            rotas = programacaoDinamica.tabelaDinamica(valor, limites);
-            listaFinal.add(rotas);
-            
-            valor = programacaoDinamica.removerRotas(valor, rotas);
+        rodarProgramacaoDinamica(rotasAleatorias, numeroCaminhoes);
+    }
+
+    private static void rodarProgramacaoDinamica(List<int[]> rotasAleatorias, int numeroCaminhoes) {
+        //List<int[]> retorno = geradorDeProblemas.geracaoDeRotas(10, 1, 5);
+        //int[] valor = retorno.get(0);
+        //List<int[]> listaFinal = new ArrayList<>();
+        double tempoTotal = 0;
+        double tempoMedioExecucao = 0;
+
+        int numeroRota = 1;
+        for (int[] valor : rotasAleatorias) {
+            List<int[]> listaFinal = new ArrayList<>();
+            // pegando limites
+            int[] limites = programacaoDinamica.tabelaLimite(valor);
+            long startTime = System.currentTimeMillis();
+            for(int caminhao=numeroCaminhoes; caminhao != 0; caminhao--){
+                
+                int[] rotas = new int[4];
+                rotas = programacaoDinamica.tabelaDinamica(valor, limites);
+                listaFinal.add(rotas);
+                
+                valor = programacaoDinamica.removerRotas(valor, rotas);
+            }
+
+            System.out.println("======================= Rotas do conjunto "+ (numeroRota) +" ===============================");
+            listaFinal.stream().forEach(v ->  System.out.println("Rota Finais: " + Arrays.toString(v)));  
+            numeroRota++; 
+            long endTime = System.currentTimeMillis();   
+            long tempoExecucao = endTime - startTime;
+            System.out.println("Tempo de execução: " + tempoExecucao + " ms");
+            tempoTotal += tempoExecucao;
+
         }
+        tempoMedioExecucao = tempoTotal / rotasAleatorias.size();
 
-        listaFinal.stream().forEach(System.out::print);
+        System.out.println("*********************************************");
+        System.out.println("Tempo médio de execução: " + tempoMedioExecucao + " ms");
 
+    }
+
+    private static void rodarProgramacaoDinamicaConjuntoElementosPreDefinidos() {
+        rodarProgramacaoDinamica(conjuntosDeRotasComMaiorTamanho, 3);
     }
 }
