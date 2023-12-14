@@ -378,7 +378,7 @@ public class App {
             listaFinal.size();
 
 
-            listaFinal.stream().forEach(v ->  System.out.println("Rota: " + Arrays.toString(v)));  
+            listaFinal.stream().forEach(v ->  System.out.println("Rota: " + Arrays.toString(v) + ", Soma das rotas: "+ programacaoDinamica.somaRotas(v)));  
             numeroRota++; 
             long endTime = System.currentTimeMillis();   
             long tempoExecucao = endTime - startTime;
