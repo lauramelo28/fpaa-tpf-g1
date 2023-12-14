@@ -7,6 +7,7 @@ import Algoritimos.GeradorDeProblemas;
 import Algoritimos.ProgramacaoDinamica;
 
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class App {
 
@@ -101,7 +102,7 @@ public class App {
         System.out.println("Digite o numero de caminhoes: ");
         int numCaminhoes = Integer.parseInt(teclado.nextLine());
 
-        List<int[]> conjuntosDeRotas = gerarElementosAleatorios();
+        List<int[]> conjuntosDeRotas = gerarElementosAleatorios();      
 
         Backtracking backtracking = new Backtracking();
 
@@ -124,7 +125,7 @@ public class App {
                 System.out.println("-" + obterRotasPorCaminhao(resultado, j, rota));
             }
         
-            System.out.println("Tempo de execução: " + tempoExecucao + " ms");
+            System.out.println("Tempo de execução: " + tempoExecucao/1000000.0 + " ms");
             tempoTotal += tempoExecucao;
         }
 
@@ -196,16 +197,6 @@ public class App {
         obterElementosDeMaiorValorLista();
     }
 
-    private static void rodarDivisaoConquistaElementosLivres(){
-        System.out.println("Digite o numero de caminhoes: ");
-        
-        int numeroCaminhoes = Integer.parseInt(teclado.nextLine());
-
-        List<int[]> rotasAleatorias = gerarElementosAleatorios();
-
-        rodarDivisaoConquista(rotasAleatorias, numeroCaminhoes);
-    }
-
     private static void rodarDivisaoConquistaConjuntoElementosPreDefinidos(){
         rodarDivisaoConquista(conjuntosDeRotasComMaiorTamanho, 3);
     }
@@ -232,12 +223,31 @@ public class App {
         return rotasCaminhao.toString();
     }
 
+    private static void rodarDivisaoConquistaElementosLivres(){
+        System.out.println("Digite o numero de caminhoes: ");
+        
+        int numeroCaminhoes = Integer.parseInt(teclado.nextLine());
+
+        List<int[]> rotasAleatorias = gerarElementosAleatorios();
+
+        rodarDivisaoConquista(rotasAleatorias, numeroCaminhoes);
+    }    
+
     private static void rodarDivisaoConquista(List<int[]> rotasAleatorias, int numeroCaminhoes){
         List<Double> temposExecucao = new ArrayList<>();
 
         System.out.println("Conjunto de rotas: ");
 
         for(int[] rota : rotasAleatorias) {
+            Arrays.sort(rota);
+            List<Integer> listaDeRotas = Arrays.stream(rota)
+                .boxed()
+                .collect(Collectors.toList());
+
+            int distanciaTotalRota = listaDeRotas.stream().mapToInt(Integer::intValue).sum(); 
+            double tolerancia = distanciaTotalRota * 0.08;
+            double mediaDesejada = ((distanciaTotalRota + tolerancia) / numeroCaminhoes);            
+
             long inicioExecucao = System.nanoTime();
 
             List<List<Integer>> rotasCaminhoes = new ArrayList<>();
@@ -248,16 +258,7 @@ public class App {
 
             System.out.println("Rota Aleatória: " + Arrays.toString(rota));
 
-            Arrays.sort(rota);
-
-            for(int i = 0; i < rota.length / 2; i++)
-            {
-                int elementoAtual = rota[i];
-                rota[i] = rota[rota.length - i - 1];
-                rota[rota.length - i - 1] = elementoAtual;
-            }
-
-            DivisaoConquista.encontrarMelhorRotaParaCadaCaminhao(rota, 0, rota.length - 1, rotasCaminhoes);
+            rotasCaminhoes = DivisaoConquista.encontrarMelhorRotaParaCadaCaminhao(listaDeRotas, rotasCaminhoes, numeroCaminhoes, mediaDesejada);
 
             long finalExecucao = System.nanoTime();
 
@@ -329,7 +330,14 @@ public class App {
         
         int numeroCaminhoes = Integer.parseInt(teclado.nextLine());
 
-        List<int[]> rotasAleatorias = gerarElementosAleatorios();
+        //List<int[]> rotasAleatorias = gerarElementosAleatorios();
+
+        List<int[]> rotasAleatorias = new ArrayList<>();
+        int[] rotaFixa1 = {40,36,38,29,32,28,31,35,31,30,32,30,29,39,35,38,39,35,32,38,32,33,29,33,29,39,28};
+        int[] rotaFixa2 = {32,51,32,43,42,30,42,51,43,51,29,25,27,32,29,55,43,29,32,44,55,29,53,30,24,27};
+
+        rotasAleatorias.add(rotaFixa1);
+        rotasAleatorias.add(rotaFixa2);
 
         rodarProgramacaoDinamica(rotasAleatorias, numeroCaminhoes);
     }
