@@ -70,7 +70,7 @@ public class ProgramacaoDinamica {
         soma = limiteNovos.stream().mapToInt(Integer::intValue).sum();
 
         // limite máximo de valor por caminhão, mais 10% para valor máximo
-        maximo = (int) ((soma/qtdCaminhoes)*1.1);
+        maximo = (int) ((soma/qtdCaminhoes)*0.10);
 
         // criando vetor deacordo com tamanho dos limites
         limitesFinal = new int[maximo];
